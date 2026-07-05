@@ -88,6 +88,8 @@ export function AnimatedBackground() {
     interface Star {
       x: number
       y: number
+      vx: number
+      vy: number
       radius: number
       alpha: number
       blinkSpeed: number
@@ -131,9 +133,11 @@ export function AnimatedBackground() {
       stars.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        radius: Math.random() * 0.8 + 0.3,
+        vx: (Math.random() - 0.5) * 0.03, // Slow movement
+        vy: (Math.random() - 0.5) * 0.03, // Slow movement
+        radius: Math.random() * 0.9 + 0.3, // Elegant small radius
         alpha: Math.random(),
-        blinkSpeed: 0.005 + Math.random() * 0.012,
+        blinkSpeed: 0.001 + Math.random() * 0.002, // Slower blink
       })
     }
 
@@ -176,12 +180,23 @@ export function AnimatedBackground() {
       // 1. Render Layer 6: Blinking Stars
       for (const star of stars) {
         if (!reducedMotion) {
+          // Slow movement
+          star.x += star.vx
+          star.y += star.vy
+
+          // Wrap boundaries
+          if (star.x < -10) star.x = canvas.width + 10
+          if (star.x > canvas.width + 10) star.x = -10
+          if (star.y < -10) star.y = canvas.height + 10
+          if (star.y > canvas.height + 10) star.y = -10
+
+          // Slower blink logic
           star.alpha += star.blinkSpeed
-          if (star.alpha > 0.85 || star.alpha < 0.1) {
+          if (star.alpha > 0.85 || star.alpha < 0.05) {
             star.blinkSpeed = -star.blinkSpeed
           }
         }
-        ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`
+        ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0.05, Math.min(star.alpha, 0.85))})`
         ctx.beginPath()
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2)
         ctx.fill()
