@@ -90,9 +90,14 @@ export function Footer() {
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} Skillify. All rights reserved.
           </p>
-          <p className="text-sm text-muted-foreground">
-            Made with care for job seekers worldwide
-          </p>
+          <div className="flex items-center gap-1.5 group cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-all duration-300">
+            <span>Design by</span>
+            <span className="signature-text relative">
+              Atul Bisen
+              <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-gradient-to-r from-primary to-accent transition-all duration-300 group-hover:w-full" />
+            </span>
+            <Sparkles className="h-4 w-4 text-primary signature-icon transition-transform duration-500 group-hover:rotate-180" />
+          </div>
         </div>
       </div>
     </footer>
