@@ -124,7 +124,7 @@ export function AnimatedBackground() {
         radius: Math.random() * 1.5 + 1,
         baseRadius: Math.random() * 1.5 + 1,
         pulse: Math.random() * Math.PI,
-        pulseSpeed: 0.02 + Math.random() * 0.03,
+        pulseSpeed: 0.003 + Math.random() * 0.005, // Slower pulsing speed
       })
     }
 
@@ -254,8 +254,9 @@ export function AnimatedBackground() {
           p.radius = p.baseRadius + Math.sin(p.pulse) * 0.4
         }
 
-        // Draw node
-        ctx.fillStyle = `rgba(99, 102, 241, ${isMobile ? 0.35 : 0.5})`
+        // Draw node with pulsing opacity and radius
+        const nodeOpacity = (isMobile ? 0.25 : 0.4) + Math.sin(p.pulse) * 0.15
+        ctx.fillStyle = `rgba(99, 102, 241, ${nodeOpacity})`
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
         ctx.fill()
