@@ -186,3 +186,83 @@
   display: inline-block;
 }
 
+/* Animated Background Grid & Layer Styles */
+.perspective-grid {
+  background-image: 
+    linear-gradient(rgba(99, 102, 241, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  background-position: center;
+  transform: perspective(600px) rotateX(65deg) translateY(-25%) translateZ(0);
+  transform-origin: top center;
+  mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.7) 45%, rgba(0, 0, 0, 0.1) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.7) 45%, rgba(0, 0, 0, 0.1) 100%);
+}
+
+@keyframes aurora-flow-slow {
+  0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+  50% { transform: translate(40px, -60px) scale(1.1) rotate(180deg); }
+  100% { transform: translate(0px, 0px) scale(1) rotate(360deg); }
+}
+
+@keyframes aurora-flow-mid {
+  0% { transform: translate(0px, 0px) scale(1.1) rotate(0deg); }
+  50% { transform: translate(-50px, 40px) scale(0.9) rotate(-180deg); }
+  100% { transform: translate(0px, 0px) scale(1.1) rotate(-360deg); }
+}
+
+@keyframes aurora-flow-fast {
+  0% { transform: translate(0px, 0px) scale(0.95) rotate(0deg); }
+  50% { transform: translate(30px, 30px) scale(1.05) rotate(90deg); }
+  100% { transform: translate(0px, 0px) scale(0.95) rotate(180deg); }
+}
+
+.animate-aurora-slow {
+  animation: aurora-flow-slow 110s infinite linear;
+}
+
+.animate-aurora-mid {
+  animation: aurora-flow-mid 90s infinite linear;
+}
+
+.animate-aurora-fast {
+  animation: aurora-flow-fast 70s infinite linear;
+}
+
+@keyframes volumetric-breath {
+  0%, 100% { transform: scale(1); opacity: 0.1; }
+  50% { transform: scale(1.12); opacity: 0.22; }
+}
+
+.animate-volumetric-breath {
+  animation: volumetric-breath 12s infinite ease-in-out;
+}
+
+@keyframes float-slow-1 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+@keyframes float-slow-2 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(15px) rotate(-180deg); }
+}
+
+@keyframes float-slow-3 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(90deg); }
+}
+
+.animate-float-slow-1 {
+  animation: float-slow-1 25s infinite ease-in-out;
+}
+
+.animate-float-slow-2 {
+  animation: float-slow-2 30s infinite ease-in-out;
+}
+
+.animate-float-slow-3 {
+  animation: float-slow-3 22s infinite ease-in-out;
+}
+
+
