@@ -1,6 +1,7 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import {
   Sparkles,
@@ -14,6 +15,7 @@ import {
   Users,
   Globe2,
   Briefcase,
+  RefreshCw,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Navbar } from '@/components/navbar'
@@ -88,7 +90,48 @@ const stats = [
   { value: '500K+', label: 'Resumes Optimized' },
 ]
 
+const careerData = [
+  {
+    name: 'Product Manager',
+    matchScore: 95,
+    skills: 28,
+    resumeScore: 88,
+    insights: "Based on your leadership and design background, you have exceptional alignment for product roles. Enhance Agile/Scrum metrics to boost match score to 98%."
+  },
+  {
+    name: 'UX Designer',
+    matchScore: 92,
+    skills: 24,
+    resumeScore: 85,
+    insights: "Your design portfolio shows strong user empathy and layout sense. Learn interactive prototyping (Framer/CSS Motion) to strengthen your edge."
+  },
+  {
+    name: 'Data Analyst',
+    matchScore: 89,
+    skills: 19,
+    resumeScore: 80,
+    insights: "Strong logical layout. To stand out for analytical roles, add hands-on projects involving SQL database architecture and data visualizations (PowerBI/Tableau)."
+  }
+]
+
 export default function LandingPage() {
+  const [isScanning, setIsScanning] = useState(true)
+  const [scanStep, setScanStep] = useState(0)
+  const [selectedCareer, setSelectedCareer] = useState(0)
+
+  useEffect(() => {
+    if (!isScanning) return
+
+    const timers = [
+      setTimeout(() => setScanStep(1), 1000),
+      setTimeout(() => setScanStep(2), 2000),
+      setTimeout(() => setScanStep(3), 3000),
+      setTimeout(() => setIsScanning(false), 3800),
+    ]
+
+    return () => timers.forEach(clearTimeout)
+  }, [isScanning])
+
   return (
     <main className="min-h-screen">
       <Navbar />
@@ -156,47 +199,257 @@ export default function LandingPage() {
           >
             <div className="glass glow mx-auto max-w-5xl overflow-hidden rounded-2xl p-2">
               <div className="rounded-xl bg-card">
-                <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-                  <div className="h-3 w-3 rounded-full bg-red-500/80" />
-                  <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
-                  <div className="h-3 w-3 rounded-full bg-green-500/80" />
-                  <span className="ml-4 text-sm text-muted-foreground">Skillify Dashboard</span>
+                <div className="flex items-center justify-between border-b border-border px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="h-3 w-3 rounded-full bg-red-500/80" />
+                    <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
+                    <div className="h-3 w-3 rounded-full bg-green-500/80" />
+                    <span className="ml-4 text-sm text-muted-foreground font-medium">Skillify AI Dashboard</span>
+                  </div>
+                  {!isScanning && (
+                    <button 
+                      onClick={() => {
+                        setIsScanning(true)
+                        setScanStep(0)
+                      }}
+                      className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors border border-border rounded-md px-2.5 py-1 bg-secondary/50 hover:bg-secondary cursor-pointer"
+                    >
+                      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 4, ease: "linear" }}>
+                        <RefreshCw className="h-3 w-3" />
+                      </motion.div>
+                      Scan Again
+                    </button>
+                  )}
                 </div>
                 <div className="p-6">
-                  <div className="grid gap-4 md:grid-cols-3">
-                    <div className="rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 p-4">
-                      <div className="text-sm text-muted-foreground">Career Match Score</div>
-                      <div className="mt-1 text-3xl font-bold text-primary">94%</div>
-                    </div>
-                    <div className="rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 p-4">
-                      <div className="text-sm text-muted-foreground">Skills Analyzed</div>
-                      <div className="mt-1 text-3xl font-bold text-accent">28</div>
-                    </div>
-                    <div className="rounded-xl bg-secondary p-4">
-                      <div className="text-sm text-muted-foreground">Resume Score</div>
-                      <div className="mt-1 text-3xl font-bold">87/100</div>
-                    </div>
-                  </div>
-                  <div className="mt-4 grid gap-4 md:grid-cols-2">
-                    <div className="rounded-xl border border-border p-4">
-                      <div className="mb-3 text-sm font-medium">Top Career Matches</div>
-                      <div className="space-y-2">
-                        {['Product Manager', 'UX Designer', 'Data Analyst'].map((career, i) => (
-                          <div key={career} className="flex items-center gap-2">
-                            <CheckCircle2 className="h-4 w-4 text-primary" />
-                            <span className="text-sm">{career}</span>
-                            <span className="ml-auto text-xs text-muted-foreground">{95 - i * 3}%</span>
+                  <AnimatePresence mode="wait">
+                    {isScanning ? (
+                      <motion.div
+                        key="scanner"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="flex flex-col items-center justify-center py-12 px-4 min-h-[320px]"
+                      >
+                        <div className="relative w-full max-w-md bg-secondary/20 rounded-xl border border-border p-6 overflow-hidden">
+                          {/* Scanning laser line animation */}
+                          <motion.div 
+                            className="absolute left-0 right-0 h-[2.5px] bg-gradient-to-r from-transparent via-primary to-transparent"
+                            animate={{ top: ['0%', '100%', '0%'] }}
+                            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                          />
+                          
+                          <div className="flex items-center gap-3 mb-6 relative z-10">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                              <Brain className="h-5 w-5 animate-pulse text-primary" />
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-sm">AI Resume Parser</h4>
+                              <p className="text-xs text-muted-foreground">Processing atul_resume.pdf</p>
+                            </div>
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="rounded-xl border border-border p-4">
-                      <div className="mb-3 text-sm font-medium">AI Insights</div>
-                      <div className="text-sm text-muted-foreground leading-relaxed">
-                        Based on your skills and experience, you have strong potential in product-focused roles. Consider enhancing your data analysis skills for higher match rates.
-                      </div>
-                    </div>
-                  </div>
+
+                          <div className="space-y-4 font-mono text-xs relative z-10">
+                            <div className="flex items-center gap-2.5">
+                              <span className={scanStep >= 0 ? "text-primary font-bold" : "text-muted-foreground"}>
+                                {scanStep > 0 ? "✓" : "●"}
+                              </span>
+                              <span className={scanStep >= 0 ? "text-foreground" : "text-muted-foreground"}>
+                                Parsing resume file structure...
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2.5">
+                              <span className={scanStep >= 1 ? "text-primary font-bold" : "text-muted-foreground"}>
+                                {scanStep > 1 ? "✓" : scanStep === 1 ? "●" : "○"}
+                              </span>
+                              <span className={scanStep >= 1 ? "text-foreground" : "text-muted-foreground"}>
+                                Extracting and mapping skill vectors...
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2.5">
+                              <span className={scanStep >= 2 ? "text-primary font-bold" : "text-muted-foreground"}>
+                                {scanStep > 2 ? "✓" : scanStep === 2 ? "●" : "○"}
+                              </span>
+                              <span className={scanStep >= 2 ? "text-foreground" : "text-muted-foreground"}>
+                                Benchmarking match scores...
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="mt-6 h-1.5 w-full bg-secondary rounded-full overflow-hidden relative z-10">
+                            <motion.div 
+                              className="h-full bg-primary"
+                              initial={{ width: "0%" }}
+                              animate={{ width: `${(scanStep / 3) * 100}%` }}
+                              transition={{ duration: 0.3 }}
+                            />
+                          </div>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="dashboard"
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.4 }}
+                        className="space-y-6"
+                      >
+                        {/* Score Cards Row */}
+                        <div className="grid gap-4 md:grid-cols-3">
+                          {/* Match Score */}
+                          <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1 }}
+                            className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 p-4 border border-primary/10"
+                          >
+                            <div className="text-sm text-muted-foreground">Career Match Score</div>
+                            <div className="mt-1 flex items-baseline gap-2">
+                              <motion.span 
+                                key={selectedCareer}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="text-3xl font-bold text-primary"
+                              >
+                                {careerData[selectedCareer].matchScore}%
+                              </motion.span>
+                            </div>
+                            <div className="mt-3 h-1.5 w-full bg-secondary/50 rounded-full overflow-hidden">
+                              <motion.div 
+                                className="h-full bg-primary rounded-full"
+                                initial={{ width: 0 }}
+                                animate={{ width: `${careerData[selectedCareer].matchScore}%` }}
+                                transition={{ duration: 0.8, ease: "easeOut" }}
+                              />
+                            </div>
+                          </motion.div>
+
+                          {/* Skills Analyzed */}
+                          <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="relative overflow-hidden rounded-xl bg-gradient-to-br from-accent/15 to-accent/5 p-4 border border-accent/10"
+                          >
+                            <div className="text-sm text-muted-foreground">Skills Analyzed</div>
+                            <div className="mt-1">
+                              <motion.span 
+                                key={selectedCareer}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="text-3xl font-bold text-accent"
+                              >
+                                {careerData[selectedCareer].skills}
+                              </motion.span>
+                            </div>
+                            <div className="mt-3 h-1.5 w-full bg-secondary/50 rounded-full overflow-hidden">
+                              <motion.div 
+                                className="h-full bg-accent rounded-full"
+                                initial={{ width: 0 }}
+                                animate={{ width: `${(careerData[selectedCareer].skills / 35) * 100}%` }}
+                                transition={{ duration: 0.8, ease: "easeOut" }}
+                              />
+                            </div>
+                          </motion.div>
+
+                          {/* Resume Score */}
+                          <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="relative overflow-hidden rounded-xl bg-secondary p-4 border border-border"
+                          >
+                            <div className="text-sm text-muted-foreground">Resume Score</div>
+                            <div className="mt-1">
+                              <motion.span 
+                                key={selectedCareer}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="text-3xl font-bold"
+                              >
+                                {careerData[selectedCareer].resumeScore}
+                              </motion.span>
+                              <span className="text-muted-foreground text-sm font-medium">/100</span>
+                            </div>
+                            <div className="mt-3 h-1.5 w-full bg-border rounded-full overflow-hidden">
+                              <motion.div 
+                                className="h-full bg-foreground rounded-full"
+                                initial={{ width: 0 }}
+                                animate={{ width: `${careerData[selectedCareer].resumeScore}%` }}
+                                transition={{ duration: 0.8, ease: "easeOut" }}
+                              />
+                            </div>
+                          </motion.div>
+                        </div>
+
+                        {/* Interactive Details Row */}
+                        <div className="grid gap-4 md:grid-cols-2">
+                          {/* Left Panel: Top Matches */}
+                          <div className="rounded-xl border border-border p-4 bg-card/50">
+                            <div className="mb-3 text-sm font-medium flex items-center justify-between">
+                              <span>Top Career Matches</span>
+                              <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-mono">Select to Analyze</span>
+                            </div>
+                            <div className="space-y-2">
+                              {careerData.map((career, i) => (
+                                <motion.div
+                                  key={career.name}
+                                  onClick={() => setSelectedCareer(i)}
+                                  whileHover={{ scale: 1.01 }}
+                                  whileTap={{ scale: 0.99 }}
+                                  className={`flex items-center gap-2.5 p-3 rounded-lg border cursor-pointer transition-all duration-200 ${
+                                    selectedCareer === i 
+                                      ? "bg-primary/10 border-primary/40 shadow-sm shadow-primary/5" 
+                                      : "bg-transparent border-transparent hover:bg-secondary/40"
+                                  }`}
+                                >
+                                  <CheckCircle2 className={`h-4.5 w-4.5 ${selectedCareer === i ? "text-primary" : "text-muted-foreground"}`} />
+                                  <span className={`text-sm font-medium transition-colors ${selectedCareer === i ? "text-foreground" : "text-muted-foreground"}`}>
+                                    {career.name}
+                                  </span>
+                                  <span className="ml-auto text-xs font-semibold bg-secondary/80 px-2 py-0.5 rounded text-muted-foreground">
+                                    {career.matchScore}%
+                                  </span>
+                                </motion.div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Right Panel: AI Insights */}
+                          <div className="rounded-xl border border-border p-4 bg-card/50 flex flex-col justify-between">
+                            <div>
+                              <div className="mb-3 text-sm font-medium flex items-center gap-1.5">
+                                <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+                                <span>AI Insights</span>
+                              </div>
+                              <div className="relative min-h-[90px]">
+                                <AnimatePresence mode="wait">
+                                  <motion.p
+                                    key={selectedCareer}
+                                    initial={{ opacity: 0, y: 5 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -5 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="text-sm text-muted-foreground leading-relaxed"
+                                  >
+                                    {careerData[selectedCareer].insights}
+                                  </motion.p>
+                                </AnimatePresence>
+                              </div>
+                            </div>
+                            <div className="mt-4 pt-3 border-t border-border/60 flex items-center justify-between text-[11px] text-muted-foreground">
+                              <span>Profile: Atul Bisen</span>
+                              <span className="text-primary font-medium hover:underline cursor-pointer flex items-center gap-0.5">
+                                View full roadmap <ArrowRight className="h-3 w-3" />
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
             </div>
