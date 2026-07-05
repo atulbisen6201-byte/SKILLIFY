@@ -1,0 +1,223 @@
+// Skillify core — Supabase PostgreSQL
+// Run: npx prisma migrate dev
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "sqlite"
+  url       = env("DATABASE_URL")
+}
+
+model User {
+  id                   String          @id @default(cuid())
+  fullName             String
+  username             String          @unique
+  email                String          @unique
+  passwordHash         String?
+  googleId             String?         @unique
+  authProvider         String          @default("email")
+  role                 String          @default("USER")
+  profileImage         String?
+  lastLogin            DateTime?
+  emailVerified        Boolean         @default(false)
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  profile              Profile?
+  resumes              Resume[]
+  enrollments          Enrollment[]
+  goals                Goal[]
+  posts                CommunityPost[]
+  comments             Comment[]
+  likes                PostLike[]
+  notifications        Notification[]
+  careerMatches        CareerMatch[]
+  stats                DashboardStats[]
+
+  // Extra fields for resume tracking and profile completion
+  resumeUrl            String?
+  resumeParsedData     String?         // JSON string containing detailed parsed resume
+  loginCount           Int             @default(0)
+  profileCompletion    Int             @default(0)
+}
+
+model Profile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio       String?
+  location  String?
+  linkedin  String?
+  github    String?
+  portfolio String?
+  skills    String?  // Comma-separated or JSON
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Resume {
+  id             String       @id @default(cuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName       String
+  email          String
+  phone          String
+  location       String?
+  linkedin       String?
+  website        String?
+  summary        String?
+  skills         String       // Comma-separated string or JSON string
+  education      Education[]
+  experience     Experience[]
+  projects       Project[]
+  certifications String       // JSON string
+  score          Int          @default(0)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Education {
+  id        String  @id @default(cuid())
+  resumeId  String
+  resume    Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  school    String
+  degree    String
+  field     String?
+  startDate String?
+  endDate   String?
+  gpa       String?
+}
+
+model Experience {
+  id          String  @id @default(cuid())
+  resumeId    String
+  resume      Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  company     String
+  position    String
+  location    String?
+  startDate   String?
+  endDate     String?
+  current     Boolean @default(false)
+  description String?
+}
+
+model Project {
+  id           String  @id @default(cuid())
+  resumeId     String
+  resume       Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  name         String
+  description  String?
+  technologies String?
+  link         String?
+}
+
+model Skill {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  courses     Course[]
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  skillId     String
+  skill       Skill    @relation(fields: [skillId], references: [id], onDelete: Restrict)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  enrollments Enrollment[]
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model Goal {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CareerMatch {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  company   String?
+  match     Int
+  salary    String?
+  createdAt DateTime @default(now())
+}
+
+model DashboardStats {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date         DateTime @default(now())
+  applications Int      @default(0)
+  views        Int      @default(0)
+  matches      Int      @default(0)
+}
+
+model CommunityPost {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title      String
+  content    String
+  likesCount Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  comments   Comment[]
+  likes      PostLike[]
+}
+
+model Comment {
+  id        String        @id @default(cuid())
+  postId    String
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model PostLike {
+  id        String        @id @default(cuid())
+  postId    String
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime      @default(now())
+
+  @@unique([postId, userId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // e.g. "achievement", "career", "resume", "goal"
+  title     String
+  message   String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
