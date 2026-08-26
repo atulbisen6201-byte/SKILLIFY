@@ -3,11 +3,11 @@ const USER_KEY = 'skillify_user'
 
 export type SkillifyUser = {
   id: string
-  name: string
-  fullName: string
-  username: string
+  name?: string
+  fullName?: string
+  username?: string
   email: string
-  role: string
+  role?: string
   avatar?: string | null
   profileImage?: string | null
   authProvider?: string

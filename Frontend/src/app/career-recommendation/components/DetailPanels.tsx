@@ -1,7 +1,7 @@
 // src/app/career-recommendation/components/DetailPanels.tsx
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Briefcase,
@@ -30,6 +30,14 @@ import {
   Users,
   Check,
   Badge,
+  Database,
+  FileCode2,
+  Coffee,
+  Brain,
+  Cloud,
+  Shield,
+  GitBranch,
+  Layers,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Career, Skill, RoadmapPhase, ProjectItem, ResourceItem, CertificateItem, InterviewCategory, CompanyHiring } from '../data/careersData'
@@ -130,11 +138,30 @@ export function CareerOverviewPanel({ career }: PanelProps) {
   )
 }
 
+const skillIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  Code,
+  Database,
+  Layers,
+  FileCode2,
+  Coffee,
+  Brain,
+  Cloud,
+  Shield,
+  GitBranch,
+  Terminal,
+  FileText,
+  Globe,
+}
+
 // -----------------------------------------------------------------------------
 // 2. REQUIRED SKILLS PANEL
 // -----------------------------------------------------------------------------
 export function RequiredSkillsPanel({ career }: PanelProps) {
   const [expandedSkillIdx, setExpandedSkillIdx] = useState<number | null>(null)
+
+  useEffect(() => {
+    setExpandedSkillIdx(null)
+  }, [career.id])
 
   return (
     <motion.div
@@ -144,6 +171,7 @@ export function RequiredSkillsPanel({ career }: PanelProps) {
       className="grid gap-4 md:grid-cols-2"
     >
       {career.skills.map((skill, idx) => {
+        const SkillIcon = skillIconMap[skill.icon] ?? Code
         const isExpanded = expandedSkillIdx === idx
         return (
           <div
@@ -154,7 +182,7 @@ export function RequiredSkillsPanel({ career }: PanelProps) {
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">
-                    <Code className="h-5 w-5" />
+                    <SkillIcon className="h-5 w-5" />
                   </div>
                   <h4 className="font-bold text-white text-md">{skill.name}</h4>
                 </div>
@@ -587,6 +615,10 @@ export function CertificationsPanel({ career }: PanelProps) {
 export function InterviewQuestionsPanel({ career }: PanelProps) {
   const [activeCategory, setActiveCategory] = useState<number | null>(null)
 
+  useEffect(() => {
+    setActiveCategory(null)
+  }, [career.id])
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
@@ -903,6 +935,27 @@ export function SalaryInsightsPanel({ career }: PanelProps) {
           </div>
         </div>
       </div>
+
+      {/* Hiring Job Titles */}
+      {career.jobRoles && career.jobRoles.length > 0 && (
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 shadow-xl space-y-4">
+          <h4 className="font-bold text-white text-md flex items-center gap-2">
+            <Building2 className="h-5 w-5 text-indigo-400" />
+            Common Hiring Job Titles
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {career.jobRoles.map((role, i) => (
+              <span
+                key={i}
+                className="px-3.5 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-xl text-xs font-semibold text-indigo-200 flex items-center gap-2"
+              >
+                <Briefcase className="h-3.5 w-3.5 text-indigo-400" />
+                {role}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
     </motion.div>
   )
 }
@@ -965,6 +1018,10 @@ export function LearningTimelinePanel({ career }: PanelProps) {
 // -----------------------------------------------------------------------------
 export function FAQPanel({ career }: PanelProps) {
   const [activeFaqIdx, setActiveFaqIdx] = useState<number | null>(null)
+
+  useEffect(() => {
+    setActiveFaqIdx(null)
+  }, [career.id])
 
   return (
     <motion.div

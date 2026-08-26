@@ -41,6 +41,9 @@ loadEnvFile(path.resolve(__dirname, '..', 'Backend', '.env'));
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   outputFileTracingRoot: path.resolve(__dirname),
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'recharts', 'framer-motion', '@react-three/fiber', '@react-three/drei'],
+  },
 };
 
 export default nextConfig;

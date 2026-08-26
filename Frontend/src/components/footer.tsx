@@ -2,28 +2,16 @@ import Link from 'next/link'
 import { Sparkles, Github, Twitter, Linkedin, Youtube } from 'lucide-react'
 
 const footerLinks = {
-  Product: [
-    { label: 'Features', href: '/#features' },
+  Features: [
     { label: 'Resume Builder', href: '/resume/new' },
     { label: 'Career Guidance', href: '/career-recommendation' },
     { label: 'VR Rooms', href: '/vr-room' },
-  ],
-  Company: [
-    { label: 'About Us', href: '/about' },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Careers', href: '/careers' },
-    { label: 'Contact', href: '/contact' },
-  ],
-  Resources: [
-    { label: 'Documentation', href: '/docs' },
-    { label: 'Help Center', href: '/help' },
     { label: 'Community', href: '/community' },
-    { label: 'API', href: '/api' },
   ],
-  Legal: [
-    { label: 'Privacy Policy', href: '/privacy' },
-    { label: 'Terms of Service', href: '/terms' },
-    { label: 'Cookie Policy', href: '/cookies' },
+  Account: [
+    { label: 'Dashboard', href: '/dashboard' },
+    { label: 'Profile', href: '/profile' },
+    { label: 'Settings', href: '/settings' },
   ],
 }
 

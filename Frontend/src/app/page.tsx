@@ -62,26 +62,6 @@ const features = [
   },
 ]
 
-const testimonials = [
-  {
-    name: 'Sarah Chen',
-    role: 'Software Engineer at Google',
-    content: 'Skillify helped me transition from marketing to tech. The AI recommendations were spot-on!',
-    avatar: 'SC',
-  },
-  {
-    name: 'Miguel Rodriguez',
-    role: 'Data Scientist',
-    content: 'The resume optimizer increased my interview callbacks by 300%. Absolutely game-changing.',
-    avatar: 'MR',
-  },
-  {
-    name: 'Priya Sharma',
-    role: 'Product Manager',
-    content: 'The multilingual support helped me explore opportunities across different countries seamlessly.',
-    avatar: 'PS',
-  },
-]
 
 const stats = [
   { value: '2M+', label: 'Career Paths Created' },
@@ -503,48 +483,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="bg-card/50 px-6 py-24">
-        <div className="mx-auto max-w-7xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center"
-          >
-            <h2 className="text-3xl font-bold sm:text-4xl">
-              Loved by <span className="gradient-text">professionals</span> worldwide
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-              Join thousands of successful professionals who transformed their careers with Skillify.
-            </p>
-          </motion.div>
-
-          <div className="mt-16 grid gap-6 md:grid-cols-3">
-            {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={testimonial.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="rounded-2xl border border-border bg-card p-6"
-              >
-                <p className="text-muted-foreground leading-relaxed">&quot;{testimonial.content}&quot;</p>
-                <div className="mt-6 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">
-                    {testimonial.avatar}
-                  </div>
-                  <div>
-                    <div className="font-medium">{testimonial.name}</div>
-                    <div className="text-sm text-muted-foreground">{testimonial.role}</div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="px-6 py-24">

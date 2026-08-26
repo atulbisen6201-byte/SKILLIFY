@@ -16,13 +16,22 @@ function getErrorMessage(json: unknown, status: number): string {
   return `Request failed (${status})`
 }
 
+async function safeFetch(url: string, init: RequestInit): Promise<Response> {
+  try {
+    return await fetch(url, init)
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    throw new Error(`Unable to connect to Skillify backend API at ${url}. (${msg})`)
+  }
+}
+
 export async function skillifyPostJson<T>(path: string, body: unknown, init?: { token?: string }): Promise<T> {
   const origin = getSkillifyApiOrigin()
   const headers: Record<string, string> = { 'Content-Type': 'application/json' }
   const token = init?.token || getAccessToken()
   if (token) headers.Authorization = `Bearer ${token}`
 
-  const res = await fetch(`${origin}${path}`, {
+  const res = await safeFetch(`${origin}${path}`, {
     method: 'POST',
     headers,
     body: JSON.stringify(body),
@@ -47,7 +56,7 @@ export async function skillifyGetJson<T>(path: string, init?: { token?: string }
   const token = init?.token || getAccessToken()
   if (token) headers.Authorization = `Bearer ${token}`
 
-  const res = await fetch(`${origin}${path}`, {
+  const res = await safeFetch(`${origin}${path}`, {
     method: 'GET',
     headers,
   })
@@ -71,7 +80,7 @@ export async function skillifyPutJson<T>(path: string, body: unknown, init?: { t
   const token = init?.token || getAccessToken()
   if (token) headers.Authorization = `Bearer ${token}`
 
-  const res = await fetch(`${origin}${path}`, {
+  const res = await safeFetch(`${origin}${path}`, {
     method: 'PUT',
     headers,
     body: JSON.stringify(body),
@@ -96,7 +105,7 @@ export async function skillifyDeleteJson<T>(path: string, init?: { token?: strin
   const token = init?.token || getAccessToken()
   if (token) headers.Authorization = `Bearer ${token}`
 
-  const res = await fetch(`${origin}${path}`, {
+  const res = await safeFetch(`${origin}${path}`, {
     method: 'DELETE',
     headers,
   })
